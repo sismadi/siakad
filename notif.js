@@ -3,9 +3,7 @@
 var notif = {
     KEY: 'notif_items_siakad',
     COLOR: { info: '#427aa1', sukses: '#2e7d32', peringatan: '#ed8b00' },
-    
-    esc: function(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); },
-    
+
     seed: function() {
         var m = 60000, now = Date.now();
         return [
@@ -51,7 +49,7 @@ var notif = {
         "<ul class='nf-list'>" + items.map(function(n) {
             return "<li class='nf-item" + (n.read ? '' : ' unread') + "' onclick='notif.tap(" + n.id + ")'>" +
             "<i style='background:" + (notif.COLOR[n.type] || notif.COLOR.info) + "'></i>" +
-            "<div><b>" + notif.esc(n.title) + "</b><p>" + notif.esc(n.text) + "</p><small>" + notif.ago(n.t) + "</small></div></li>";
+            "<div><b>" + ui.esc(n.title) + "</b><p>" + ui.esc(n.text) + "</p><small>" + notif.ago(n.t) + "</small></div></li>";
         }).join('') + "</ul>";
     },
     open: function() { d.sidePanel('Notifikasi', notif.render()); },
@@ -71,6 +69,6 @@ var notif = {
         var a = notif.load();
         a.push({ id: Date.now(), type: o.type || 'info', title: o.title || '', text: o.text || '', t: Date.now(), read: false, go: o.go || '' });
         notif.save(a); notif.refresh();
-        if (typeof d.info === 'function') d.info(notif.esc(o.title || 'Notifikasi baru'));
+        d.info(ui.esc(o.title || 'Notifikasi baru'));
     }
 };

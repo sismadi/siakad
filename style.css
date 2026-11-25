@@ -32,7 +32,7 @@
   flex-direction: column;
   
 }
-.menu .sidebar-header p { padding: 5px 10px; text-align: center; /* Koreksi dari 'align:center' */}
+.menu .sidebar-header p { padding: 5px 10px; text-align: center; }
 .menu .sidebar-footer { padding: 20px 10px; margin-top: auto;  opacity: 0.7;}
 
 .menu .logo {display: block; text-align: center; width: 100%; }
@@ -108,7 +108,7 @@
         .menu ul li.item:active svg { transform: translateX(-50%) scale(.94); }
 }
 
-/* ===== mobile: kartu 2 kolom (dashboard & kasir), chip kategori fit isi ===== */
+/* ===== mobile: kartu 2 kolom (dashboard & presensi), chip kategori fit isi ===== */
 @media screen and (max-width: 450px) {
   #pos-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
   #pos-grid > [class*='col-'] { width: auto; min-width: 0; }
@@ -122,28 +122,17 @@
   #pos-chips { gap: 6px; }
 }
 
-/* ===== kasir (pos) ===== */
+/* ===== presensi (halaman absen) ===== */
 button.aktif { background: var(--pColor); color: #fff; border-color: var(--pColor); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 .pos-top .search button { border: 1px solid #ddd; background: #f8f8f8; white-space: nowrap; }
 .pos-top .gButton { margin: 8px 5px 0; }
 #pos-grid .card { cursor: pointer; }
 #pos-grid .card:hover { animation: none; transform: translateY(-2px); }
-#pos-grid .card.habis { opacity: 0.45; cursor: not-allowed; }
-#pos-grid .badge, .badge { display: inline-block; min-width: 22px; padding: 0 6px; border-radius: 11px; background: var(--pColor); color: #fff; font-size: 12px; text-align: center; }
-.cart-label { display: block; font-size: 13px; color: #666; margin: 12px 0 2px; }
-.cart-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid #eee; }
-.cart-info { flex: 1; min-width: 0; }
-.cart-qty { display: flex; align-items: center; gap: 6px; }
-.cart-qty button { min-width: 30px; justify-content: center; padding: 2px 8px; margin: 0; }
-.cart-sub { min-width: 86px; text-align: right; }
-.cart-del { padding: 4px; margin: 0; border: none; background: transparent; }
+.badge { display: inline-block; min-width: 22px; padding: 0 6px; border-radius: 11px; background: var(--pColor); color: #fff; font-size: 12px; text-align: center; }
 .cart-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .cart-total { font-size: 1.25em; font-weight: bold; border-top: 1px solid #ddd; margin-top: 4px; padding-top: 8px; }
-.cart-pay { display: flex; gap: 8px; flex-wrap: wrap; }
 .cart-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
-.cart-actions .bayar { flex: 1; justify-content: center; background: green; color: #fff; border-color: green; }
-.struk { font-family: monospace; }
 
 /* ===== dashboard ===== */
 .dash-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 5px 5px 10px; }
@@ -175,7 +164,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 /* ===== dashboard: kartu sama tinggi ===== */
 .dash .row { display: flex; flex-wrap: wrap; align-items: stretch; width: 100%; }
 .dash .row > [class*='col-'] { float: none; display: flex; flex-direction: column; }
-.dash .row > [class*='col-'] > .shadow { flex: 1; margin: 5px; }
 .dash .row.card-container > [class*='col-'] > .shadow { height: calc(100% - 10px); }
 #table-container { overflow-x: auto; }
 #table-container .table { min-width: 0; table-layout: auto; }
@@ -199,7 +187,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .lp-btn-ghost { background: transparent; color: #fff; border-color: #ffffffaa; }
 .lp a:focus-visible, .lp button:focus-visible { outline: 3px solid var(--pLightColor); outline-offset: 2px; }
 
-.lp-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 6px 8px 14px; }
+.lp-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; position: sticky; top: 0; z-index: 5; margin: 0 -8px 8px; padding: 10px 16px; background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #e3e3e3; }
 .lp-nav > .lp-menu { display: flex; align-items: center; gap: 16px; margin-left: auto; margin-right: 8px; }
 .lp-links { display: flex; gap: 20px; }
 .lp-burger { display: none; }
@@ -220,7 +208,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .lp-prev { left: 12px; } .lp-next { right: 12px; }
 .lp-dots { position: absolute; bottom: 14px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 2; }
 .lp-dot { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: none; background: #ffffff66; }
-.lp-dot.active { background: #fff; width: 26px; border-radius: 5px; }
+.lp-dot.active { background: var(--pLightColor); width: 26px; border-radius: 5px; }
 
 .lp-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 24px; text-align: center; }
 .lp-stats div { padding: 16px 8px; }
@@ -299,8 +287,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .lp-slide.v2 { background: linear-gradient(120deg, var(--pDarkColor), var(--pColor)); }
 .lp-ico.t0, .lp-thumb.t0 { background: var(--pColor); }
 .lp-ico.t1, .lp-thumb.t1 { background: var(--pDarkColor); }
-.lp-dot.active { background: var(--pLightColor); }
-.lp-cta .lp-btn-accent { background: var(--pLightColor); }
 
 /* ===== kpi: kartu sama dengan profil ===== */
 .dash #stat-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
@@ -310,7 +296,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .dash #stat-cards > [class*='col-'] { width: auto; float: none; }
 .dash #stat-cards .card { flex: 1; padding: 10px; }
 .dash #stat-cards .artikel { margin: 4px 10px 10px; gap: 2px; }
-.kpi-val { font-size: 1.7em; font-weight: bold; line-height: 1.2; }
 
 /* ===== isi kartu rata bawah agar proporsional ===== */
 .dash .row:not(.card-container) > [class*='col-'] > .shadow { display: flex; flex-direction: column; }
@@ -319,8 +304,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .dash #pie-legend { margin-top: auto; }
 .dash #progress-bars { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 
-/* ===== landing page: menu atas sticky ===== */
-.lp-nav { position: sticky; top: 0; z-index: 5; margin: 0 -8px 8px; padding: 10px 16px; background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #e3e3e3; }
+/* ===== landing page: menu atas sticky (tinggi anchor) ===== */
 .lp-section, .lp-cta { scroll-margin-top: 72px; }
 @media screen and (max-width: 700px) and (min-width: 451px) {
   .lp-nav { top: 50px; }
@@ -429,3 +413,142 @@ body.auth-mode .main { margin-left: 0; margin-right: 0; padding: 0; }
 .nf-item p { margin: 2px 0 4px; color: #444; font-size: .95em; }
 .nf-item small { color: #666; }
 .nf-empty { text-align: center; color: #666; padding: 24px 0; }
+
+/* ===== font seragam, sidebar bersarang, drawer, tombol, modal, dropdown (dulu tambahan.css) ===== */
+/* ---- font seragam: kontrol form, tabel, judul, badge, tombol mewarisi font body ---- */
+button, input, select, textarea, table, th, td, h1, h2, h3, h4, h5, h6, label, small, strong, b, .badge, .button, .input, .label {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+input, select, textarea, button { font-size: 1rem; line-height: 1.4; }
+.table th, .table td { font-size: .95rem; line-height: 1.45; }
+.table th { font-weight: 600; }
+.badge { font-size: .75rem; font-weight: 600; }
+.side-panel .panel-body { font-size: .95rem; }
+.side-panel .table th { width: 42%; }
+.dash select.input, .dash input.input { width: auto; }
+
+/* ---- sidebar: grup menu + submenu ---- */
+.menu #leftmenu { flex: 0 0 auto; overflow: visible; }
+/* desktop: sidebar ikut memanjang ke bawah mengikuti isi menu (tanpa scrollbar), tinggi sama dengan konten */
+@media screen and (min-width: 701px) {
+  body { display: flex; align-items: stretch; min-height: 100vh; }
+  .menu { position: relative; flex: 0 0 200px; height: auto; min-height: 100vh; }
+  .main { margin-left: 0; flex: 1 1 auto; min-width: 0; }
+}
+.menu #leftmenu li.grp { display: block; padding: 0; cursor: default; }
+.menu #leftmenu li.grp:hover:not(.active) { background: transparent; color: inherit; }
+.menu #leftmenu li.grp > .grp-t { display: flex; align-items: center; justify-content: space-between; padding: 10px; cursor: pointer; }
+.menu #leftmenu li.grp > .grp-t:hover { background: var(--pLightColor); color: var(--pDarkColor); }
+.menu #leftmenu li.grp > .grp-t i { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform .2s; margin: 0 4px 3px 0; }
+.menu #leftmenu li.grp.open > .grp-t i { transform: rotate(-135deg); margin-bottom: -3px; }
+.menu #leftmenu li.grp.has-active > .grp-t { font-weight: 600; }
+.menu #leftmenu ul.sub { display: none; background: #0000002e; }
+.menu #leftmenu li.grp.open > ul.sub { display: block; }
+.menu #leftmenu ul.sub li { padding: 7px 10px 7px 24px; font-size: .9rem; line-height: 1.3; display: block; }
+.menu #leftmenu ul.sub ul.sub { background: #00000022; }
+.menu #leftmenu ul.sub ul.sub li { padding-left: 38px; font-size: .85rem; }
+.menu #leftmenu ul.sub li.grp > .grp-t { padding: 7px 10px 7px 24px; font-size: .9rem; }
+.menu #leftmenu ul.sub li small { display: block; opacity: .75; font-size: .75rem; }
+@media screen and (max-width: 700px) { .menu #leftmenu li.grp { display: none; } }
+.menu #leftmenu ul.sub li.grp { padding: 0; }
+.menu #leftmenu ul.sub ul.sub li { padding-left: 38px; }
+
+/* ---- drawer & tabel Kelas Kuliah: ringkas ---- */
+.aksi-bar { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+.table.ringkas { margin: 0 0 10px; }
+.table.ringkas th { width: 26%; vertical-align: top; }
+.redup { opacity: .6; }
+details.lanjut { margin: 8px 0 12px; border: 1px dashed rgba(0,0,0,.25); border-radius: 6px; padding: 0 10px; }
+details.lanjut > summary { cursor: pointer; padding: 8px 0; font-weight: 600; }
+details.lanjut[open] > summary { margin-bottom: 6px; }
+/* kolom form DonatJS memakai float: bagian Lanjutan harus berada di bawah kolom lain dan membungkus isinya */
+.side-panel form::after { content: ""; display: block; clear: both; }
+details.lanjut { clear: both; display: flow-root; }
+
+/* ---- tabel tidak keluar area: bungkus bisa digulir mendatar, kartu tidak melebar ---- */
+.gTable { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.shadow, .col-1-1, .col-2-3, .col-1-2, .col-1-3, .dash .row > [class*='col-'] { min-width: 0; max-width: 100%; }
+.row { table-layout: fixed; }
+.main #content, .main > div { min-width: 0; max-width: 100%; }
+.gTable .table th, .gTable .table td { word-break: normal; overflow-wrap: anywhere; }
+.gTable .table th, .table thead th { white-space: nowrap; }
+.gTable .table td { min-width: 70px; }
+
+/* ---- baris tombol drawer: Cancel, Update, Delete satu baris, rapat dan sama ukuran ---- */
+.panel-body .gButton { display: flex; flex-wrap: nowrap; gap: 8px; margin: 16px 0 0; justify-content: flex-start; }
+.panel-body .gButton button { flex: 1 1 0; justify-content: center; margin: 0; white-space: nowrap; }
+.panel-body .aksi-bar.gButton, .panel-body .aksi-bar { flex-wrap: wrap; }
+.panel-body .aksi-bar button { flex: 0 0 auto; }
+
+/* ---- tombol seragam: font, ukuran, bobot, bentuk sama di semua tombol (drawer, toolbar, paging, konfirmasi) ---- */
+.panel-body button, .aksi-bar button, .gButton button, .gPaging button, .konfirm .modal button:not(.merah) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: inherit; font-size: .9rem; font-weight: 600; line-height: 1.4; letter-spacing: inherit;
+  padding: 7px 14px; border-radius: 6px; cursor: pointer;
+}
+.panel-body button svg, .aksi-bar button svg, .gButton button svg, .gPaging button svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ---- warna latar menurut fungsi (atribut data-action): Add hijau, Edit/Update biru tema, Delete merah, Cancel/Back abu-abu, lainnya biru muda ---- */
+:root { --aksi-add: #2e7d32; --aksi-edit: var(--pColor); --aksi-delete: #d9534f; --aksi-back: #6c757d; --aksi-info: #2b9fc9; }
+button[data-action] { color: #fff; border: 1px solid rgba(0,0,0,.15); background: var(--aksi-info); }
+button[data-action] svg path { fill: #fff; }
+button[data-action="Add"], button[data-action="Insert"] { background: var(--aksi-add); }
+button[data-action="Edit"], button[data-action="Update"], button[data-action="Save"] { background: var(--aksi-edit); }
+button[data-action="Delete"] { background: var(--aksi-delete); }
+button[data-action="Cancel"], button[data-action="Back"] { background: var(--aksi-back); }
+button[data-action]:hover:not(:disabled) { filter: brightness(.92); }
+button[data-action]:focus-visible { outline: 3px solid var(--pLightColor); outline-offset: 2px; }
+/* cadangan: kelas warna bawaan DonatJS (getWarna) */
+button.red, .button.red { background: var(--aksi-delete); color: #fff; }
+button.grey, .button.grey { background: var(--aksi-back); color: #fff; }
+
+/* ---- modal konfirmasi (tengah layar, di atas drawer) ---- */
+.depan.konfirm { display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.depan.konfirm .modal { width: min(420px, 92%); margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,.3); overflow: hidden; }
+.depan.konfirm .modalbar button.merah { background: transparent; font-size: 1.1rem; }
+.depan.konfirm .modalcontent { padding: 16px 20px 20px; display: block; }
+.depan.konfirm .info { text-align: left; padding: 4px 0 8px; line-height: 1.5; }
+.depan.konfirm .gButton { justify-content: flex-end; margin: 12px 0 0; }
+
+/* ---- dropdown id dengan pencarian (pilihan.js) ---- */
+.pil-list { position: fixed; z-index: 3000; overflow-y: auto; background: #fff; border: 1px solid #bbb; border-radius: 4px; box-shadow: 0 8px 20px rgba(0,0,0,.2); font-size: .95rem; }
+.pil-item { padding: 7px 10px; cursor: pointer; }
+.pil-item:hover, .pil-item.hl { background: var(--pLightColor); }
+.pil-item.cur { background: var(--pColor); color: #fff; }
+.pil-kosong { padding: 8px 10px; opacity: .6; }
+
+/* ---- garis kiri baris terpilih: garis lurus, bukan kurung ---- */
+.table tbody tr, #table .table tbody tr.selected { border-radius: 0; }
+#table .table tbody tr.selected { box-shadow: none; border: 0; }
+#table .table tbody tr.selected > td:first-child, #table .table tbody tr.selected > th:first-child { box-shadow: inset 4px 0 0 var(--pColor); }
+
+/* ---- kartu presensi: gambar/SVG dekoratif tidak boleh menutupi tombol H I S A ---- */
+#pos-grid .card > svg, #pos-grid .card > img { pointer-events: none; }
+#pos-grid .card .artikel, #pos-grid .card .gButton { position: relative; z-index: 3; }
+
+/* ---- drawer: baris tombol (Cancel, Update, Delete, Insert, dll) berada di atas, TIDAK sticky ----
+   Baris tombol ada di akhir DOM (donat.js), jadi diurutkan ke atas dengan flex order. Tombol navigasi (.aksi-bar) tetap paling atas. */
+.side-panel .panel-body { display: flex; flex-direction: column; }
+.side-panel .panel-body > * { flex: 0 0 auto; }
+.side-panel .panel-body > .aksi-bar { order: -2; }
+.side-panel .panel-body > :has(> .gButton) { order: -1; margin: 0 0 12px; padding: 0 0 10px; border-bottom: 1px solid #eee; }
+.side-panel .panel-body > :has(> .gButton) > .gButton { margin: 0; }
+
+/* ---- halaman detail: menu samping (ui.subnav) + isi (ui.panel dengan nav), dipakai dkelas.js dan kuliah.js (jadwal kelas) ---- */
+.dt-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: start; }
+.dt-layout > .shadow { margin: 5px; padding: 14px 16px; }
+.dt-layout > .dt-nav { padding: 8px; position: sticky; top: 10px; }
+.dt-menu li { padding: 9px 12px; border-left: 3px solid transparent; border-radius: 6px; cursor: pointer; }
+.dt-menu li:hover { background: var(--pLightColor); }
+.dt-menu li.active { background: var(--pLightColor); color: var(--pDarkColor); font-weight: 600; border-left-color: var(--pColor); }
+.dt-menu li.belum:not(.active) { opacity: .6; }
+.dt-main h3 { margin: 18px 0 8px; font-size: 1.05em; }
+.dt-main > h3:first-child, .dt-main > .aksi-bar + h3 { margin-top: 0; }
+@media screen and (max-width: 900px) {
+  .dt-layout { grid-template-columns: minmax(0, 1fr); }
+  .dt-layout > .dt-nav { position: static; }
+  .dt-menu { display: flex; gap: 4px; overflow-x: auto; }
+  .dt-menu li { flex: 0 0 auto; white-space: nowrap; }
+}
+

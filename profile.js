@@ -12,9 +12,7 @@ var profile = {
             try { d.setls('profile', user); return true; }
             catch (e) { d.info('Penyimpanan penuh, foto terlalu besar'); return false; }
         },
-        esc: function(v) {
-            return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        },
+        esc: ui.esc,   // komponen bersama (app.js)
         progress: function(user) {
             var label = { name: 'Nama', role: 'Peran', bio: 'Bio', location: 'Lokasi', email: 'Email', phone: 'Telepon', website: 'Website' };
             var missing = [];

@@ -1,4 +1,4 @@
-/* Presensi mahasiswa (pengganti halaman Kasir). Tata letak sama dengan pos.js:
+/* Presensi mahasiswa (pengganti halaman Kasir). Tata letak:
    pencarian + chip + kartu + panel samping. Data dari dataset.js (kelas, pertemuan, krs, mahasiswa, presensi).
    Status: H hadir, I izin, S sakit, A alpha. Tersimpan otomatis ke localStorage ('dataset'). */
 var absen = {
@@ -40,10 +40,12 @@ var absen = {
             var r = absen.model.data().presensi.data.find(function(x) { return x.pertemuan_id == pid && x.mahasiswa_id == mid; });
             return r ? r.status : '';
         },
+        // status kosong = hapus baris presensi
         set: function(pid, mid, s) {
             var ds = absen.model.data(), rows = ds.presensi.data;
             var r = rows.find(function(x) { return x.pertemuan_id == pid && x.mahasiswa_id == mid; });
-            if (r) { r.status = s; }
+            if (!s) { ds.presensi.data = rows.filter(function(x) { return x !== r; }); }
+            else if (r) { r.status = s; }
             else {
                 var max = 0; rows.forEach(function(x) { if (x.id > max) { max = x.id; } });
                 rows.push({ id: max + 1, pertemuan_id: pid, mahasiswa_id: mid, status: s });
@@ -68,7 +70,6 @@ var absen = {
 
     controller: {
         absen: function() {
-            var st = absen.model.load();
             d.gebi('content').innerHTML = `
                 <div class="row shadow pos-top">
                     <div class="search">
@@ -86,10 +87,10 @@ var absen = {
         chips: function() {
             var st = absen.model.load();
             d.gebi('pos-chips').innerHTML = absen.model.kelas().map(function(k) {
-                return `<button class="${css.button} ${st.kelas_id == k.id ? 'aktif' : ''}" onclick="absen.controller.kelas(${k.id})">${absen.model.nama(k)}</button>`;
+                return ui.chip(absen.model.nama(k), st.kelas_id == k.id, 'absen.controller.kelas(' + k.id + ')');
             }).join('');
             d.gebi('pos-ke').innerHTML = absen.model.daftarPertemuan(st).map(function(p) {
-                return `<button class="${css.button} ${st.ke == p.ke ? 'aktif' : ''}" onclick="absen.controller.ke(${p.ke})">P${p.ke}</button>`;
+                return ui.chip('P' + p.ke, st.ke == p.ke, 'absen.controller.ke(' + p.ke + ')');
             }).join('');
             var p = absen.model.pertemuan(st);
             d.gebi('absen-info').innerHTML = p ? `<b>Pertemuan ${p.ke}</b> | ${p.tanggal} ${p.jam_mulai} | ${p.materi.replace(/^Pertemuan \d+: /, '')} | Presensi dosen: ${p.presensi_dosen ? 'sudah' : 'belum'}` : 'Belum ada pertemuan.';
@@ -106,7 +107,7 @@ var absen = {
             d.gebi('pos-grid').innerHTML = list.map(function(m) {
                 var s = p ? absen.model.status(p.id, m.id) : '';
                 var btn = ['H', 'I', 'S', 'A'].map(function(k) {
-                    return `<button class="${css.button} ${s == k ? 'aktif' : ''}" style="padding:4px 10px;margin:0" title="${absen.STATUS[k]}" onclick="absen.controller.tandai(${m.id},'${k}')">${k}</button>`;
+                    return ui.chip(k, s == k, "absen.controller.tandai(" + m.id + ",'" + k + "')", ' style="padding:4px 10px;margin:0" title="' + absen.STATUS[k] + '"');
                 }).join('');
                 return `
 <div class="col-1-4">
@@ -122,16 +123,13 @@ var absen = {
             }).join('') || '<div class="artikel">Mahasiswa tidak ditemukan.</div>';
             var r = absen.model.rekap(st), el = d.gebi('pos-badge-text');
             if (el) { el.textContent = 'Rekap (' + (r.total - r.kosong) + '/' + r.total + ')'; }
-            if (typeof d.renderImage === 'function') { d.renderImage(); }
+            ui.gambar();
         },
 
         tandai: function(mid, s) {
             var st = absen.model.load(), p = absen.model.pertemuan(st);
             if (!p) { d.info('Belum ada pertemuan'); return; }
             absen.model.set(p.id, mid, absen.model.status(p.id, mid) == s ? '' : s);
-            // status kosong = hapus baris presensi
-            var ds = absen.model.data();
-            ds.presensi.data = ds.presensi.data.filter(function(x) { return x.status; });
             absen.model.sinkron(st);
             absen.controller.chips();
         },
@@ -156,8 +154,8 @@ ${row('Hadir', r.H)}${row('Izin', r.I)}${row('Sakit', r.S)}${row('Alpha', r.A)}$
 <div class="cart-row cart-total"><span>Kehadiran</span><span>${r.persen}%</span></div>
 <div class="info">Lengkapi presensi setidaknya 50% dari ${r.total} mahasiswa terdaftar.</div>
 <div class="cart-actions">
-  <button data-action="Cancel" onclick="tutup()"> <img data-src="?x/32x32" alt="Donat"> Tutup</button>
-  <button class="bayar" onclick="absen.controller.hadirSemua()"> <img data-src="?check/32x32/white" alt="Donat"> Tandai hadir semua</button>
+  ${ui.btn('Tutup', 'x', 'd.closePanel()', true, 'Cancel')}
+  ${ui.btn('Tandai hadir semua', 'check', 'absen.controller.hadirSemua()', true, 'Add')}
 </div>`;
             d.sidePanel('Rekap Presensi', html);
         }
