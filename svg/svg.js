@@ -2,16 +2,6 @@
     let cachedData = null;
     let isFetching = false;
 
-const getCSSVarValues = (varName) => {
-        if (!varName || !varName.startsWith('var(')) return varName;
-        const temp = document.createElement('div');
-        temp.style.color = varName;
-        document.body.appendChild(temp);
-        const style = getComputedStyle(temp).color;
-        document.body.removeChild(temp);
-        return style || "#47B4ED";
-    };
-
 const getCSSVarValue = (varName) => {
     if (!varName || !varName.startsWith('var(')) return varName;
     const cleanVarName = varName.match(/\(([^)]+)\)/)[1].trim();

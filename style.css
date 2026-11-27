@@ -552,3 +552,12 @@ button.grey, .button.grey { background: var(--aksi-back); color: #fff; }
   .dt-menu li { flex: 0 0 auto; white-space: nowrap; }
 }
 
+/* Cetak laporan (mhspa: Daftar Mahasiswa Bimbingan). Alasan: belum ada aturan @media print; kerangka aplikasi disembunyikan agar hanya isi halaman tercetak. */
+@page { size: A4 landscape; margin: 12mm; }
+@media print {
+  #menu, #header, #footer, #bawah, #modal, #panel-container, .dash-head, .aksi-bar, .gpaging { display: none !important; }
+  .main { margin: 0; padding: 0; }
+  .shadow { box-shadow: none !important; border: 0 !important; }
+  .table { font-size: .72rem; }
+  .table th, .table td { padding: 3px 4px; }
+}

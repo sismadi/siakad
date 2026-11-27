@@ -5,7 +5,7 @@
    url = rute Sevima (diikuti idkelas), rute = rute DonatJS (diikuti id kelas), status = tersedia | belum (isi halaman belum dimasukkan). */
 var menuData = {
   // rute Sevima -> rute DonatJS yang sudah tersedia
-  rute: { home: 'home/home/1', list_kelas: 'kuliah/kuliah/1', list_matakuliah: 'mkuliah/mkuliah/1' },
+  rute: { home: 'home/home/1', list_kelas: 'kuliah/kuliah/1', list_matakuliah: 'mkuliah/mkuliah/1', set_berhentistudi: 'bstudi/bstudi/1', list_forum: 'flama/flama/1', list_kelaskm: 'kuliah/km/1', list_konsultasi: 'konsul/konsul/1', list_mhspa: 'mhspa/mhspa/1', list_pengajuanta: 'pta/pta/1', list_ta: 'takhir/takhir/1', list_kkn: 'kkn/kkn/1', view_kalender: 'kalakad/kalakad/1', list_jadwalajar: 'jminggu/jminggu/1' },
   nav: [
     { id: 1, parent_id: 0, nama: 'Beranda', deskripsi: '', url: 'home', ikon: 'beranda', peran: 'dosen' },
     { id: 2, parent_id: 0, nama: 'Bimbingan', deskripsi: '', url: '', ikon: 'bimbingan', peran: 'dosen' },
@@ -48,14 +48,14 @@ var menuData = {
     { id: 1, parent_id: 0, nama: 'Detail Kelas', status: 'tersedia', keterangan: 'Data kelas, dosen pengajar, jadwal mingguan', url: 'data_kelas/detail', rute: 'dkelas/detail' },
     { id: 2, parent_id: 0, nama: 'Dosen Pengajar', status: 'tersedia', keterangan: 'Dosen dan data pengajaran', url: 'data_pengajar/detail', rute: 'dkelas/pengajar' },
     { id: 3, parent_id: 0, nama: 'Peserta Kelas', status: 'tersedia', keterangan: 'Mahasiswa peserta (KRS)', url: 'list_peserta', rute: 'dkelas/peserta' },
-    { id: 4, parent_id: 0, nama: 'Kontrak Kuliah', status: 'belum', keterangan: 'Kontrak perkuliahan kelas', url: 'data_kontrakkul/detail', rute: 'dkelas/kontrak' },
+    { id: 4, parent_id: 0, nama: 'Kontrak Kuliah', status: 'tersedia', keterangan: 'Kontrak perkuliahan kelas', url: 'data_kontrakkul/detail', rute: 'dkelas/kontrak' },
     { id: 5, parent_id: 0, nama: 'Jadwal Perkuliahan', status: 'tersedia', keterangan: 'Sesi perkuliahan kelas', url: 'list_perkuliahan', rute: 'kuliah/jadwal' },
     { id: 6, parent_id: 0, nama: 'Presensi Kelas', status: 'tersedia', keterangan: 'Rekap presensi per sesi', url: 'list_absensi', rute: 'dkelas/presensi' },
-    { id: 7, parent_id: 0, nama: 'Kesan Perkuliahan', status: 'belum', keterangan: 'Kesan mahasiswa', url: 'list_kesanmhs', rute: 'dkelas/kesan' },
-    { id: 8, parent_id: 0, nama: 'Jadwal Ujian', status: 'belum', keterangan: 'Jadwal ujian kelas', url: 'list_jadwalujian', rute: 'dkelas/ujian' },
-    { id: 9, parent_id: 0, nama: 'Nilai Perkuliahan', status: 'belum', keterangan: 'Pengisian dan penguncian nilai', url: 'set_nilai', rute: 'dkelas/nilai' },
-    { id: 10, parent_id: 0, nama: 'Rekap Kuesioner', status: 'belum', keterangan: 'Hasil angket kelas', url: 'list_angketkelas', rute: 'dkelas/kuesioner' },
-    { id: 11, parent_id: 0, nama: 'RPS', status: 'belum', keterangan: 'Rencana pembelajaran semester', url: 'view_rps', rute: 'dkelas/rps' },
-    { id: 12, parent_id: 0, nama: 'Tugas Kuliah', status: 'belum', keterangan: 'Forum dan tugas kelas', url: 'list_forumkelas', rute: 'dkelas/tugas' }
+    { id: 7, parent_id: 0, nama: 'Kesan Perkuliahan', status: 'tersedia', keterangan: 'Kesan mahasiswa', url: 'list_kesanmhs', rute: 'dkelas/kesan' },
+    { id: 8, parent_id: 0, nama: 'Jadwal Ujian', status: 'tersedia', keterangan: 'Jadwal ujian kelas', url: 'list_jadwalujian', rute: 'dkelas/ujian' },
+    { id: 9, parent_id: 0, nama: 'Nilai Perkuliahan', status: 'tersedia', keterangan: 'Pengisian dan penguncian nilai', url: 'set_nilai', rute: 'dkelas/nilai' },
+    { id: 10, parent_id: 0, nama: 'Rekap Kuesioner', status: 'tersedia', keterangan: 'Hasil angket kelas', url: 'list_angketkelas', rute: 'dkelas/kuesioner' },
+    { id: 11, parent_id: 0, nama: 'RPS', status: 'tersedia', keterangan: 'Rencana pembelajaran semester', url: 'view_rps', rute: 'dkelas/rps' },
+    { id: 12, parent_id: 0, nama: 'Tugas Kuliah', status: 'tersedia', keterangan: 'Forum dan tugas kelas', url: 'list_forumkelas', rute: 'dkelas/tugas' }
   ]
 };

@@ -2,18 +2,22 @@
    Data dari dataset.js (kelas, matakuliah, prodi, dosen, periode, pertemuan).
    Tabel hanya memuat kolom inti; informasi lengkap ada di drawer (ringkasan, tombol Edit -> form).
    Komponen daftar, drawer, badge, paging, konfirmasi, menu samping: lihat ui di app.js (dipakai juga oleh mkuliah.js dan dkelas.js).
-   Detail kelas + menu kiri (Detail Kelas, Dosen Pengajar, dst.): dkelas.js. */
+   Detail kelas + menu kiri (Detail Kelas, Dosen Pengajar, dst.): dkelas.js.
+   Kelas Kampus Berdampak (SEVIMA /siakad/list_kelaskm): mode st.km pada daftar yang sama (kuliah.controller.km), hanya kelas kampus_berdampak = 'ya'; filter tambahan kurikulum dan jenis status. */
 var kuliah = {
     // state per daftar: kelas = tabel Kelas Kuliah, sesi = tabel Jadwal Perkuliahan ({q, rpp, page})
-    st: { periode: 0, prodi: 0, jadwal: 0, semua: false, jf: 0, kelas: { q: '', rpp: 10, page: 1 }, sesi: { q: '', rpp: 10, page: 1 } },
+    st: { periode: 0, prodi: 0, jadwal: 0, semua: false, jf: 0, km: false, kur: 0, jenis: '', kelas: { q: '', rpp: 10, page: 1 }, sesi: { q: '', rpp: 10, page: 1 } },
 
     model: {
         data: function() { d.service.init(); return dataset; },
         find: function(tb, id) { return kuliah.model.data()[tb].data.find(function(x) { return x.id == id; }); },
         // kolom teknis yang disembunyikan di bagian "Lanjutan" pada form drawer
-        LANJUT_KELAS: ['idkelas', 'idjadwal', 'kurikulum', 'pjmk', 'jumlah_pertemuan', 'sistem_kuliah', 'tgl_mulai', 'tgl_selesai', 'kampus_berdampak', 'metode_pengajaran', 'frekuensi'],
+        LANJUT_KELAS: ['idkelas', 'idjadwal', 'kurikulum', 'pjmk', 'jumlah_pertemuan', 'sistem_kuliah', 'tgl_mulai', 'tgl_selesai', 'kampus_berdampak', 'tgl_tutup', 'metode_pengajaran', 'frekuensi'],
         LANJUT_SESI: ['kelas_id', 'kelompok', 'ket_ruang', 'url_online', 'sks', 'dosen_id', 'dosen_pengganti', 'dokumen_presensi', 'dokumen_jurnal', 'presensi_dosen'],
         WARNA: { dimulai: '#2b9fc9', berlangsung: '#f0ad4e', selesai: '#2e7d32', terjadwal: '#777' },   // badge status sesi
+        // filter halaman Kelas Kampus Berdampak: kurikulum (daftar tetap SEVIMA) dan jenis status (kelas yang sudah punya ...; id = kunci di rows().ada)
+        KUR: [{ id: 2026, nama: '2026' }, { id: 2025, nama: '2025' }, { id: 2024, nama: '2024' }, { id: 2022, nama: '2022' }, { id: 2021, nama: '2021' }, { id: 2000, nama: '2000' }],
+        JENIS: [{ id: 'jadwal', nama: 'Jadwal Kuliah' }, { id: 'dosen', nama: 'Dosen Pengajar' }, { id: 'peserta', nama: 'Peserta Kelas' }, { id: 'nilai', nama: 'Nilai Sudah Dikunci' }],
         aktif: function() { var a = kuliah.model.data().periode.data.find(function(p) { return p.status === 'aktif'; }); return a ? a.id : 0; },
         hari: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
         bulan: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -38,11 +42,13 @@ var kuliah = {
                     id: k.id, kodemk: mk.kode || '', mk: (mk.kode || '-') + ' - ' + (mk.nama || '-'), metode: mk.metode || '',
                     prodi: ui.prodi(pr), kelas: k.kode, pengajar: dos.nama || '',
                     jadwal: k.hari ? k.hari + ', ' + k.jam_mulai + ' s.d ' + k.jam_selesai : '',
-                    kap: k.kapasitas, pst: k.peserta, kunci: k.nilai_dikunci, periode_id: k.periode_id, prodi_id: mk.prodi_id
+                    kap: k.kapasitas, pst: k.peserta, kunci: k.nilai_dikunci, periode_id: k.periode_id, prodi_id: mk.prodi_id,
+                    km: k.kampus_berdampak, kur: k.kurikulum, ada: { jadwal: !!k.hari, dosen: !!k.dosen_id, peserta: Number(k.peserta) > 0, nilai: k.nilai_dikunci === 'Dikunci' }
                 };
             }).filter(function(r) {
                 if (st.periode && r.periode_id != st.periode) { return false; }
                 if (st.prodi && r.prodi_id != st.prodi) { return false; }
+                if (st.km && (r.km !== 'ya' || (st.kur && r.kur != st.kur) || (st.jenis && !r.ada[st.jenis]))) { return false; }
                 return !q || [r.mk, r.prodi, r.kelas, r.pengajar, r.jadwal, r.metode].join(' ').toLowerCase().indexOf(q) >= 0;
             }).sort(function(a, b) { return (a.kodemk + a.kelas).localeCompare(b.kodemk + b.kelas); });
         },
@@ -83,21 +89,35 @@ var kuliah = {
 
     controller: {
         kuliah: function() {
-            var ds = kuliah.model.data(), st = kuliah.st; st.jadwal = 0; st.semua = false;
+            var ds = kuliah.model.data(), st = kuliah.st; st.jadwal = 0; st.semua = false; st.km = false;
             if (!st.periode) { st.periode = kuliah.model.aktif(); }
             d.gebi('content').innerHTML = ui.listPage(ui.head('Kelas Kuliah', 'Daftar Kelas &amp; Jadwal Perkuliahan'),
                 kuliah.view.periode() +
                 ui.sel('kuliah.controller.filter', 'prodi', ui.opt(ds.prodi.data, st.prodi, ui.prodi, '-- Semua Program Studi --')) +
+                ui.search('kuliah.controller.kset', st.kelas, 'Cari Kelas Kuliah') +
+                ui.btn('Tambah Kelas', 'plus', 'kuliah.controller.tambahKelas()', true));
+            kuliah.controller.draw();
+        },
+
+        // Kelas Kampus Berdampak: daftar yang sama dengan filter tambahan kurikulum dan jenis status; klik baris -> drawer edit
+        km: function() {
+            var ds = kuliah.model.data(), m = kuliah.model, st = kuliah.st; st.jadwal = 0; st.semua = false; st.km = true;
+            if (!st.periode) { st.periode = m.aktif(); }
+            d.gebi('content').innerHTML = ui.listPage(ui.head('Kelas Kuliah', 'Daftar Kelas Kuliah Kampus Berdampak'),
+                kuliah.view.periode() +
+                ui.sel('kuliah.controller.filter', 'prodi', ui.opt(ds.prodi.data, st.prodi, ui.prodi, '-- Semua Prodi --')) +
+                ui.sel('kuliah.controller.filter', 'kur', ui.opt(m.KUR, st.kur, function(x) { return x.nama; }, 'Semua Kurikulum')) +
+                ui.sel('kuliah.controller.filter', 'jenis', ui.opt(m.JENIS, st.jenis, function(x) { return x.nama; }, 'Semua Jenis Status', '')) +
                 ui.search('kuliah.controller.kset', st.kelas, 'Cari Kelas Kuliah'));
             kuliah.controller.draw();
         },
 
         // d.url(modul) memanggil view() setelah simpan/hapus: kembali ke halaman yang sedang dibuka
-        view: function() { if (kuliah.st.semua) { kuliah.controller.jadwalSemua(); } else if (kuliah.st.jadwal) { kuliah.controller.jadwal(kuliah.st.jadwal); } else { kuliah.controller.kuliah(); } },
+        view: function() { if (kuliah.st.semua) { kuliah.controller.jadwalSemua(); } else if (kuliah.st.jadwal) { kuliah.controller.jadwal(kuliah.st.jadwal); } else if (kuliah.st.km) { kuliah.controller.km(); } else { kuliah.controller.kuliah(); } },
 
         // filter periode / prodi / kelas (jf): halaman dibangun ulang karena pilihan kelas mengikuti periode
         filter: function(k, v) {
-            var st = kuliah.st; st[k] = Number(v);
+            var st = kuliah.st; st[k] = (k === 'jenis') ? v : Number(v);
             if (k === 'periode') { st.jf = 0; }
             st.kelas.page = 1; st.sesi.page = 1;
             kuliah.controller.view();
@@ -213,7 +233,25 @@ var kuliah = {
         },
         hapus: function(id) {
             var k = kuliah.model.find('kelas', id); if (!k) { return; }
-            ui.hapusRow('kelas', id, 'Hapus Kelas', 'Yakin menghapus kelas <b>' + ui.esc(k.kode) + '</b>? Tindakan ini tidak dapat dibatalkan.', kuliah.controller.kuliah);
+            ui.hapusRow('kelas', id, 'Hapus Kelas', 'Yakin menghapus kelas <b>' + ui.esc(k.kode) + '</b>? Tindakan ini tidak dapat dibatalkan.', kuliah.controller.view);
+        },
+
+        // Tambah Kelas (SEVIMA data_kelas, mode tambah): form DonatJS di panel samping; modul 'kuliah' agar simpan kembali ke daftar (kuliah.controller.view)
+        tambahKelas: function() {
+            var m = kuliah.model, ds = m.data(), st = kuliah.st, pe = m.find('periode', st.periode) || m.find('periode', m.aktif()) || {}, baru = {}, mx = 0;
+            ds.kelas.tipe.forEach(function(t) { baru[t.id] = ''; });
+            ds.kelas.data.forEach(function(k) { mx = Math.max(mx, Number(k.id) || 0); });
+            // idkelas diisi sementara (wajib; ID asli diberi SEVIMA); program studi mengikuti mata kuliah, tidak disimpan di kelas
+            Object.assign(baru, { idkelas: 'N' + (mx + 1), periode_id: pe.id || '', tgl_mulai: pe.tgl_mulai || '', tgl_selesai: pe.tgl_selesai || '', ruangan_id: 0,
+                program: 'Reguler Pagi', sistem_kuliah: 'KELAS REGULER', kapasitas: 50, peserta: 0, nilai_dikunci: 'Tidak Dikunci', pjmk: 'ya',
+                jumlah_pertemuan: 16, kampus_berdampak: 'tidak', metode_pengajaran: 'Dosen Tunggal' });
+            modul = 'kuliah';
+            d.service.param.t = 'kelas';
+            d.model.add.input.tipe = ds.kelas.tipe;
+            d.model.add.input.data = baru;
+            d.sidePanel('Tambah Kelas', d.view.edit(d.model.add));
+            ui.lanjut(m.LANJUT_KELAS, 'Lanjutan');
+            ui.gambar();
         }
     }
 };

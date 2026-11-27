@@ -142,6 +142,32 @@ return '<input class="input" style="flex:2;min-width:180px" type="text" placehol
 '<select class="input" onchange="' + fn + '(\'rpp\',this.value)">' + [5, 10, 50].map(function(n) { return '<option' + (n == l.rpp ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select>';
 },
 
+/* filter toolbar bersama (dropdown + chip berhitung); dipakai bersama ui.search dan ui.btn di ui.listPage.
+   o = { fn: nama fungsi controller (k, v) yang menerima perubahan, st: state filter modul,
+         sel: [{k: kunci di st, arr: [{id, nama}], label: fungsi(x) -> teks (bawaan x.nama atau x.id), all: teks pilihan "semua" (kosong = tanpa), allVal: nilainya (bawaan ''), min: lebar minimum}],
+         chip: {k: kunci di st, semua: teks chip "semua" (kosong = tanpa), n: jumlah semua, items: [{id, nama, n}]} }
+   Pasangkan dengan ui.filterSet di fungsi fn. Contoh: mhspa.js. */
+filter: function(o) {
+var nm = function(x) { return x.nama || x.id; };
+var sel = (o.sel || []).map(function(s) {
+return ui.sel(o.fn, s.k, ui.opt(s.arr, o.st[s.k], s.label || nm, s.all, s.allVal == null ? '' : s.allVal), s.min);
+}).join('');
+var c = o.chip, chip = '';
+if (c) {
+var tombol = function(id, teks, n) {
+return ui.chip(ui.esc(teks) + (n == null ? '' : ' (' + n + ')'), o.st[c.k] === id, o.fn + "('" + c.k + "','" + id + "')");
+};
+chip = (c.semua ? tombol('', c.semua, c.n) : '') + (c.items || []).map(function(i) { return tombol(i.id, i.nama, i.n); }).join('');
+}
+return sel + chip;
+},
+
+// terapkan satu perubahan filter ke st: kunci di daftar angka diubah ke Number; halaman daftar l kembali ke 1 (l kosong = tidak ada)
+filterSet: function(st, l, k, v, angka) {
+st[k] = (angka || []).indexOf(k) >= 0 ? Number(v) : v;
+if (l) { l.page = 1; }
+},
+
 // ubah state daftar dari toolbar: q = teks, selain itu angka; halaman kembali ke 1
 query: function(l, k, v) { l[k] = (k === 'q') ? v : Number(v); l.page = 1; },
 
